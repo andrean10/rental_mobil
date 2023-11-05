@@ -118,6 +118,7 @@ class RegisterMobileController extends GetxController {
       numberPhone: numberPhone.value,
       address: address.value,
       role: SharedValues.USER,
+      createdAt: DateTime.now(),
     );
 
     try {

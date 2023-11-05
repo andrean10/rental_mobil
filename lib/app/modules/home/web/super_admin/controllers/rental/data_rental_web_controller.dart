@@ -12,7 +12,7 @@ import '../../../../../init/controllers/init_controller.dart';
 
 class DataRentalWebController extends GetxController {
   late InitController _initC;
-  late final RentalDataSource rentalDataSource;
+  late RentalDataSource rentalDataSource;
 
   final formKey = GlobalKey<FormState>();
   final rentalNameC = TextEditingController();
@@ -50,7 +50,6 @@ class DataRentalWebController extends GetxController {
               .map((e) => UsersModel.fromFirestore(e.data()))
               .toList(),
         );
-        
   }
 
   Future<void> updateUser({

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../modules/home/web/widgets/actions/builder_actions_table_user.dart';
+import '../../modules/home/web/widgets/is_active/builder_is_active_table_user.dart';
 
 class UsersDataSource extends DataGridSource {
   final List<UsersModel> users;
@@ -30,6 +31,10 @@ class UsersDataSource extends DataGridSource {
         DataGridCell<String>(
             columnName: 'numberPhone', value: users.numberPhone),
         DataGridCell<String>(columnName: 'address', value: users.address),
+        DataGridCell<UsersModel>(
+          columnName: 'isActive',
+          value: users,
+        ),
         DataGridCell<UsersModel>(columnName: 'actions', value: users),
       ],
     );
@@ -59,6 +64,7 @@ class UsersDataSource extends DataGridSource {
 
       return Container(
         alignment: (dataGridCell.columnName == 'id' ||
+                dataGridCell.columnName == 'isActive' ||
                 dataGridCell.columnName == 'actions')
             ? Alignment.center
             : Alignment.centerLeft,
@@ -68,11 +74,16 @@ class UsersDataSource extends DataGridSource {
                 value: dataGridCell.value as UsersModel,
                 rowIndex: index,
               )
-            : Text(
-                dataGridCell.value.toString(),
-                overflow: TextOverflow.clip,
-                softWrap: true,
-              ),
+            : (dataGridCell.columnName == 'isActive')
+                ? BuilderIsActiveTableUser(
+                    users: dataGridCell.value as UsersModel,
+                    rowIndex: index,
+                  )
+                : Text(
+                    dataGridCell.value.toString(),
+                    overflow: TextOverflow.clip,
+                    softWrap: true,
+                  ),
       );
     }).toList());
   }

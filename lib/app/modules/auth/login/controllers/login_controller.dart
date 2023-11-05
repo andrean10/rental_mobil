@@ -57,11 +57,6 @@ class LoginController extends GetxController {
     final theme = Get.theme;
 
     try {
-      await _initC.auth.signInWithEmailAndPassword(
-        email: email.value.trim(),
-        password: passwordC.text,
-      );
-
       final data = await _initC.firestore
           .collection('users')
           .where('email', isEqualTo: email.value.trim())
@@ -73,21 +68,48 @@ class LoginController extends GetxController {
             ),
           );
 
+      logger.d('debug: data $data');
+
       if (data.isNotEmpty) {
+        logger.d('debug: data ${data.toString()}');
+
+        await _initC.auth.signInWithEmailAndPassword(
+          email: email.value.trim(),
+          password: passwordC.text,
+        );
+
+        final isActive = data.firstOrNull?.isActive;
         final role = data.firstOrNull?.role;
-        if (role != null) {
-          moveToMain(role);
+
+        if (isActive != null && isActive) {
+          if (role != null) {
+            moveToMain(role);
+          }
+        } else {
+          showSnackBar(
+            content: const Text(
+              'Akunmu belum diaktifkan, beritahu admin untuk mengaktifkan akunmu terlebih dahulu!',
+            ),
+            backgroundColor: theme.colorScheme.error,
+            duration: 3.seconds,
+          );
         }
+      } else {
+        showSnackBar(
+          content: const Text('Email salah!'),
+          backgroundColor: theme.colorScheme.error,
+          duration: 3.seconds,
+        );
       }
-    } on FirebaseException catch (e) {
+    } on FirebaseAuthException catch (e) {
       logger.e('error: $e');
 
       final errMessage = switch (e.code) {
-        'user-disabled' => 'User dinonaktifkan!',
+        'user-disabled' =>
+          'Akunmu belum diaktifkan, beritahu admin untuk mengaktifkan akunmu terlebih dahulu!',
         'user-not-found' => 'User tidak ditemukan!',
         'wrong-password' => 'Password salah!',
-        _ =>
-          'Terjadi masalah saat mengecek autentikasi anda, cek kembali email atau password anda',
+        _ => 'Password salah!',
       };
 
       showSnackBar(

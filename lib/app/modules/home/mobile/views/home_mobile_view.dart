@@ -68,14 +68,41 @@ class HomeMobileView extends GetView<HomeMobileController> {
         flex: 2,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: CachedNetworkImage(
-            height: double.infinity,
-            imageUrl: '${item.urlImg}',
-            fit: BoxFit.cover,
-            errorWidget: (context, url, error) => Image.asset(
-              'assets/img/no_image.png',
-              fit: BoxFit.cover,
-            ),
+          child: Stack(
+            children: [
+              CachedNetworkImage(
+                height: double.infinity,
+                imageUrl: '${item.urlImg}',
+                fit: BoxFit.cover,
+                errorWidget: (context, url, error) => Image.asset(
+                  'assets/img/no_image.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Obx(
+                () {
+                  controller.pesanan.value;
+
+                  if (controller.checkIsRented(item.uid!)) {
+                    return Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Colors.black.withOpacity(0.5),
+                      child: Center(
+                        child: Text(
+                          'Disewa',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ],
           ),
         ),
       );
@@ -125,67 +152,35 @@ class HomeMobileView extends GetView<HomeMobileController> {
         itemBuilder: (context, index) {
           final item = data[index];
 
-          return GestureDetector(
-            onTap: () => controller.moveToCarDetails(item),
-            child: SizedBox(
-              height: size.height * 0.2,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  builderImage(item),
-                  const SizedBox(width: 21),
-                  builderInfo(item),
-                ],
-              ),
-            ),
+          return Obx(
+            () {
+              controller.pesanan.value;
+
+              return GestureDetector(
+                onTap: () {
+                  if (!controller.checkIsRented(item.uid!)) {
+                    controller.moveToCarDetails(item);
+                  }
+                },
+                child: SizedBox(
+                  height: size.height * 0.2,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      builderImage(item),
+                      const SizedBox(width: 21),
+                      builderInfo(item),
+                    ],
+                  ),
+                ),
+              );
+            },
           );
         },
         separatorBuilder: (context, index) => const SizedBox(height: 32),
         itemCount: data.length,
       );
     }
-
-    // AutoSizeText(
-    //   '${item.?.rental?.fullName}',
-    //   style: theme.textTheme.bodyMedium,
-    // ),
-    // const SizedBox(height: 12),
-    // Row(
-    //   children: [
-    //     const Icon(
-    //       Icons.today_rounded,
-    //       size: 18,
-    //       color: Colors.blue,
-    //     ),
-    //     const SizedBox(width: 4),
-    //     AutoSizeText(
-    //       FormatDateTime.dateToString(
-    //         newPattern: 'dd MMMM yyyy, HH:mm',
-    //         value: item.tanggalMulai.toString(),
-    //       ),
-    //       style: theme.textTheme.labelMedium,
-    //     ),
-    //   ],
-    // ),
-    // const SizedBox(height: 4),
-    // Row(
-    //   children: [
-    //     const Icon(
-    //       Icons.event_available_rounded,
-    //       size: 18,
-    //       color: Colors.green,
-    //     ),
-    //     const SizedBox(width: 4),
-    //     AutoSizeText(
-    //       FormatDateTime.dateToString(
-    //         newPattern: 'dd MMMM yyyy, HH:mm',
-    //         value: item.tanggalSelesai.toString(),
-    //       ),
-    //       style: theme.textTheme.labelMedium,
-    //     ),
-    //   ],
-    // ),
-    // const SizedBox(height: 21),
 
     return Scaffold(
       appBar: builderAppBar(),

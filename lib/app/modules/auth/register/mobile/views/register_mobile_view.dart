@@ -51,6 +51,23 @@ class RegisterMobileView extends GetView<RegisterMobileController> {
       );
     }
 
+    Widget builderAddress() {
+      return Obx(
+        () => CustomTextField(
+          title: 'Alamat',
+          controller: controller.addressC,
+          hintTitle: 'Jl. Soebrantas',
+          keyboardType: TextInputType.streetAddress,
+          textInputAction: TextInputAction.done,
+          suffixIconState: controller.address.isNotEmpty,
+          validator: (value) => Validation.formField(
+            value: value,
+            titleField: 'Alamat',
+          ),
+        ),
+      );
+    }
+
     Widget builderAuth() {
       return SizedBox(
         width: (GetPlatform.isWeb)
@@ -82,6 +99,8 @@ class RegisterMobileView extends GetView<RegisterMobileController> {
                   ),
                   const SizedBox(height: 16),
                   builderNumberPhone(),
+                  const SizedBox(height: 16),
+                  builderAddress(),
                   const SizedBox(height: 32),
                   BuilderAuthButton(
                     textFilledButton: 'Register',

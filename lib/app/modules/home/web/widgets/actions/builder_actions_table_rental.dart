@@ -103,6 +103,7 @@ class BuilderActionsTableRental extends GetView<DataRentalWebController> {
                   numberPhone: controller.numberPhoneC.text,
                   address: controller.addressC.text,
                   role: value.role,
+                  createdAt: value.createdAt,
                 );
 
                 controller.updateUser(

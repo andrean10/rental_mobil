@@ -94,10 +94,25 @@ class DataUserWebView extends GetView<DataUserWebController> {
         ),
       ),
       GridColumn(
+        columnName: 'isActive',
+        width: 150,
+        allowFiltering: false,
+        label: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          alignment: Alignment.center,
+          child: const Text(
+            'Apakah aktif ?',
+            style: TextStyle(fontWeight: FontWeight.bold),
+            overflow: TextOverflow.clip,
+            softWrap: true,
+          ),
+        ),
+      ),
+      GridColumn(
         columnName: 'actions',
+        width: 150,
         allowSorting: false,
         allowFiltering: false,
-        columnWidthMode: ColumnWidthMode.lastColumnFill,
         label: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
           alignment: Alignment.center,

@@ -122,6 +122,7 @@ class DataUserWebController extends GetxController {
         numberPhone: numberPhoneC.text,
         address: addressC.text,
         role: role,
+        createdAt: DateTime.now(),
       );
 
       try {
@@ -153,6 +154,12 @@ class DataUserWebController extends GetxController {
         );
       }
     }
+  }
+
+  Future<void> updateIsActive({required String uid, required bool value,}) async {
+    await _initC.firestore.collection('users').doc(uid).update({
+      'is_active': value,
+    });
   }
 
   Future<void> deleteUser({

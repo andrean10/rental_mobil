@@ -69,6 +69,7 @@ class ProfileWebController extends GetxController {
         address: addressC.text,
         role: SharedValues.ADMIN_RENTAL,
         urlImage: urlImage.value,
+        createdAt: DateTime.now(),
       );
 
       try {

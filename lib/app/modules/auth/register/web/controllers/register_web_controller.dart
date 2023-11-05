@@ -124,6 +124,7 @@ class RegisterWebController extends GetxController {
       numberPhone: numberPhone.value,
       address: address.value,
       role: SharedValues.ADMIN_RENTAL,
+      createdAt: DateTime.now(),
     );
 
     try {
