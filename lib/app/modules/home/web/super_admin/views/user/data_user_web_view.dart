@@ -94,6 +94,21 @@ class DataUserWebView extends GetView<DataUserWebController> {
         ),
       ),
       GridColumn(
+        columnName: 'bukti_kendaraan',
+        columnWidthMode: ColumnWidthMode.auto,
+        allowFiltering: false,
+        allowSorting: false,
+        label: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          alignment: Alignment.center,
+          child: const Text(
+            'Lihat Bukti Kendaraan',
+            style: TextStyle(fontWeight: FontWeight.bold),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
+      GridColumn(
         columnName: 'isActive',
         width: 150,
         allowFiltering: false,

@@ -156,7 +156,10 @@ class DataUserWebController extends GetxController {
     }
   }
 
-  Future<void> updateIsActive({required String uid, required bool value,}) async {
+  Future<void> updateIsActive({
+    required String uid,
+    required bool value,
+  }) async {
     await _initC.firestore.collection('users').doc(uid).update({
       'is_active': value,
     });

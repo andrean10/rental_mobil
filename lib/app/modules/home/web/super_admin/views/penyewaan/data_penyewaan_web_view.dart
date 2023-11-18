@@ -3,6 +3,7 @@ import 'package:app_rental_mobil/app/modules/home/web/widgets/builder_data_table
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class DataPenyewaanWebView extends GetView<DataPenyewaanWebController> {
@@ -147,6 +148,7 @@ class DataPenyewaanWebView extends GetView<DataPenyewaanWebController> {
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.hasError) {
+              Logger().e('Error: ${snapshot.error.toString()}');
               return Center(
                 child: Text(snapshot.error.toString()),
               );

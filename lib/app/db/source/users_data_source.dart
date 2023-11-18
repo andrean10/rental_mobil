@@ -1,6 +1,9 @@
 import 'package:app_rental_mobil/app/db/models/users_model.dart';
 import 'package:app_rental_mobil/app/shared/shared_values.dart';
+import 'package:app_rental_mobil/app/widgets/buttons/custom_filled_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:get/get.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../modules/home/web/widgets/actions/builder_actions_table_user.dart';
@@ -20,8 +23,14 @@ class UsersDataSource extends DataGridSource {
   }) {
     return DataGridRow(
       cells: [
-        DataGridCell<int>(columnName: 'no', value: index),
-        DataGridCell<String>(columnName: 'name', value: users.fullName),
+        DataGridCell<int>(
+          columnName: 'no',
+          value: index,
+        ),
+        DataGridCell<String>(
+          columnName: 'name',
+          value: users.fullName,
+        ),
         DataGridCell<String>(
             columnName: 'role',
             value: (users.role == SharedValues.ADMIN_RENTAL)
@@ -29,13 +38,25 @@ class UsersDataSource extends DataGridSource {
                 : 'User'),
         DataGridCell<String>(columnName: 'email', value: users.email),
         DataGridCell<String>(
-            columnName: 'numberPhone', value: users.numberPhone),
-        DataGridCell<String>(columnName: 'address', value: users.address),
+          columnName: 'numberPhone',
+          value: users.numberPhone,
+        ),
+        DataGridCell<String>(
+          columnName: 'address',
+          value: users.address,
+        ),
+        DataGridCell<List<String>>(
+          columnName: 'buktiKendaraan',
+          value: users.urlKendaraanImages,
+        ),
         DataGridCell<UsersModel>(
           columnName: 'isActive',
           value: users,
         ),
-        DataGridCell<UsersModel>(columnName: 'actions', value: users),
+        DataGridCell<UsersModel>(
+          columnName: 'actions',
+          value: users,
+        ),
       ],
     );
   }
@@ -62,6 +83,63 @@ class UsersDataSource extends DataGridSource {
         cells: row.getCells().map((dataGridCell) {
       final index = dataGridRows.indexOf(row);
 
+      Widget builderChild() {
+        return switch (dataGridCell.columnName) {
+          'buktiKendaraan' => CustomFilledButton(
+              onPressed: () {
+                final value = dataGridCell.value as List<String>?;
+
+                Get.dialog(
+                  Dialog.fullscreen(
+                    child: Stack(
+                      children: [
+                        (value != null)
+                            ? ImageSlideshow(
+                                height: double.infinity,
+                                autoPlayInterval: 3000,
+                                isLoop: true,
+                                children: value
+                                    .map(
+                                      (e) =>
+                                          Image.network(e, fit: BoxFit.cover),
+                                    )
+                                    .toList(),
+                              )
+                            : const Center(
+                                child: Text('Bukti gambar tidak ada!'),
+                              ),
+                        Positioned(
+                          top: 16,
+                          left: 16,
+                          child: IconButton.filled(
+                            onPressed: () => Get.back(),
+                            icon: const Icon(Icons.close_rounded),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              isFilledTonal: false,
+              child: const Text('Lihat'),
+            ),
+          'actions' => BuilderActionsTableUser(
+              value: dataGridCell.value as UsersModel,
+              rowIndex: index,
+            ),
+          'isActive' => BuilderIsActiveTableUser(
+              users: dataGridCell.value as UsersModel,
+              rowIndex: index,
+            ),
+          _ => Text(
+              dataGridCell.value.toString(),
+              overflow: TextOverflow.clip,
+              softWrap: true,
+            )
+        };
+      }
+
       return Container(
         alignment: (dataGridCell.columnName == 'id' ||
                 dataGridCell.columnName == 'isActive' ||
@@ -69,21 +147,7 @@ class UsersDataSource extends DataGridSource {
             ? Alignment.center
             : Alignment.centerLeft,
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-        child: (dataGridCell.columnName == 'actions')
-            ? BuilderActionsTableUser(
-                value: dataGridCell.value as UsersModel,
-                rowIndex: index,
-              )
-            : (dataGridCell.columnName == 'isActive')
-                ? BuilderIsActiveTableUser(
-                    users: dataGridCell.value as UsersModel,
-                    rowIndex: index,
-                  )
-                : Text(
-                    dataGridCell.value.toString(),
-                    overflow: TextOverflow.clip,
-                    softWrap: true,
-                  ),
+        child: builderChild(),
       );
     }).toList());
   }

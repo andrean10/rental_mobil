@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String title;
   final TextEditingController? controller;
+  final bool? isAutoFocus;
   final String? hintTitle;
   final bool isReadOnly;
+  final bool? isShowCursor;
   final bool isEnable;
   final bool obscureText;
   final TextAlign textAlign;
@@ -29,8 +31,10 @@ class CustomTextField extends StatelessWidget {
     Key? key,
     required this.title,
     this.controller,
+    this.isAutoFocus,
     this.hintTitle,
     this.isReadOnly = false,
+    this.isShowCursor,
     this.isEnable = true,
     this.obscureText = false,
     this.textAlign = TextAlign.start,
@@ -85,6 +89,7 @@ class CustomTextField extends StatelessWidget {
         TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           autocorrect: false,
+          autofocus: isAutoFocus ?? false,
           controller: controller,
           obscureText: obscureText,
           textAlign: textAlign,
@@ -96,6 +101,7 @@ class CustomTextField extends StatelessWidget {
                   {required currentLength, required isFocused, maxLength}) =>
               null,
           readOnly: isReadOnly,
+          showCursor: isShowCursor,
           enabled: isEnable,
           decoration: InputDecoration(
             isDense: true,

@@ -1,6 +1,7 @@
 import 'package:app_rental_mobil/app/helper/validation.dart';
 import 'package:app_rental_mobil/app/modules/auth/widgets/builder_auth_button.dart';
 import 'package:app_rental_mobil/app/modules/auth/widgets/builder_auth_head.dart';
+import 'package:app_rental_mobil/app/shared/shared_theme.dart';
 import 'package:app_rental_mobil/app/widgets/textformfield/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class RegisterWebView extends GetView<RegisterWebController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final orientation = MediaQuery.of(context).orientation;
 
     Widget builderRentalName() {
@@ -70,12 +72,42 @@ class RegisterWebView extends GetView<RegisterWebController> {
           controller: controller.addressC,
           hintTitle: 'Jl. Soebrantas',
           keyboardType: TextInputType.streetAddress,
-          textInputAction: TextInputAction.done,
+          maxLines: 3,
           suffixIconState: controller.address.isNotEmpty,
           validator: (value) => Validation.formField(
             value: value,
             titleField: 'Alamat',
           ),
+        ),
+      );
+    }
+
+    Widget builderUploadCar() {
+      return CustomTextField(
+        controller: controller.multipleImgC,
+        title: 'Upload Foto Mobil (Wajib Min 3 Gambar)',
+        hintTitle: 'Belum ada file yang dipilih',
+        isReadOnly: false,
+        isShowCursor: false,
+        keyboardType: TextInputType.none,
+        textInputAction: TextInputAction.done,
+        suffixIcon: InkWell(
+          onTap: controller.pickMultipleImage,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: theme.colorScheme.outlineVariant,
+            ),
+            padding: const EdgeInsets.all(14),
+            child: const Text(
+              'Telusuri File',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        validator: (value) => Validation.formField(
+          value: value,
+          titleField: 'Upload Foto Mobil',
         ),
       );
     }
@@ -115,6 +147,15 @@ class RegisterWebView extends GetView<RegisterWebController> {
                   builderNumberPhone(),
                   const SizedBox(height: 16),
                   builderAddress(),
+                  const SizedBox(height: 16),
+                  builderUploadCar(),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Syarat dan ketentuan yang berlaku',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: SharedTheme.bold,
+                    ),
+                  ),
                   const SizedBox(height: 32),
                   BuilderAuthButton(
                     textFilledButton: 'Register',

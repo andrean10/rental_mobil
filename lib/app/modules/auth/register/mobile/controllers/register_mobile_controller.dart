@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
-import '../../../../../routes/app_pages.dart';
 import '../../../../../shared/shared_values.dart';
 import '../../../../../utils/constants_lottie.dart';
 import '../../../../init/controllers/init_controller.dart';
@@ -127,7 +126,7 @@ class RegisterMobileController extends GetxController {
           .doc(user.uid)
           .set(dataUser.toFirestore());
 
-      moveToMain();
+      showDialogSuccess();
     } on FirebaseException catch (e) {
       logger.e('error: $e');
 
@@ -140,18 +139,18 @@ class RegisterMobileController extends GetxController {
     }
   }
 
-  void moveToMain() {
+  void showDialogSuccess() {
     Get.dialog(
       const CustomDialog(
         title: 'Pendaftaran Berhasil',
         description:
-            'Mantap.. akun kamu sudah terdaftar, sistem akan mengarahkan kamu ke halaman utama',
+            'Mantap.. akun kamu sudah terdaftar, silahkan hubungi admin untuk pengaktifkan akun',
         animation: ConstantsLottie.success,
       ),
       barrierDismissible: false,
     );
 
-    Future.delayed(5.seconds, () => Get.offAllNamed(Routes.MAIN));
+    Future.delayed(5.seconds, () => moveToLogin());
   }
 
   void moveToLogin() => Get.back();

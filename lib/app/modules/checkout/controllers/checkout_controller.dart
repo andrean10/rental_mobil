@@ -42,7 +42,7 @@ class CheckoutController extends GetxController {
       Get.dialog(
         const CustomDialog(
           title: 'Berhasil',
-          description: 'Data berhasil dihapus!',
+          description: 'Pesanan mobil berhasil dibuat!',
           animation: ConstantsLottie.success,
         ),
       );

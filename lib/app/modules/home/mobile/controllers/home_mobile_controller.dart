@@ -63,8 +63,6 @@ class HomeMobileController extends GetxController {
       return dateEnd.isAfter(now);
     });
 
-    logger.d('debug: isRented = $isRented, with uid = $kendaraanUid');
-
     return isRented ?? false;
   }
 

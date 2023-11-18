@@ -117,6 +117,24 @@ class RiwayatPesananWebView extends GetView<DataPesananWebController> {
         ),
       ),
       GridColumn(
+        columnName: 'keluhan',
+        width: 300,
+        allowFiltering: false,
+        allowSorting: false,
+        label: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          alignment: Alignment.center,
+          child: const Text(
+            'Keluhan',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+            overflow: TextOverflow.clip,
+            softWrap: true,
+          ),
+        ),
+      ),
+      GridColumn(
         columnName: 'location',
         columnWidthMode: ColumnWidthMode.auto,
         allowFiltering: false,

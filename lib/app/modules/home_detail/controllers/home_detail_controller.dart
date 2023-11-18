@@ -48,6 +48,12 @@ class HomeDetailController extends GetxController {
   }
 
   Future<Position> checkGPS() {
+    Get.snackbar(
+      'Perhatian',
+      'Sedang mengambil data lokasi, tunggu sebentar...',
+      backgroundColor: Colors.blue,
+      colorText: Colors.white,
+    );
     return _initC.determinePosition();
   }
 
@@ -128,7 +134,10 @@ class HomeDetailController extends GetxController {
                 position!.longitude,
               ),
             ),
-            rental: User(uid: data.user?.uid, fullName: ''),
+            rental: User(
+              uid: data.user?.uid,
+              fullName: '',
+            ),
           ),
           kendaraanModel: data,
           tanggalMulai: formatedStartDateTime,
@@ -143,13 +152,18 @@ class HomeDetailController extends GetxController {
           arguments: dataOrder,
         );
       } else {
-        isLoading.value = false;
         checkGPS().then((value) {
+          position = value;
+          moveToCheckout();
+        }).catchError((e) {
+          logger.e(e);
+          isLoading.value = false;
           Get.snackbar(
             'Perhatian',
-            'Sedang mengambil data lokasi, tunggu sebentar...',
+            'Gagal mengambil data lokasi, silahkan coba lagi',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
           );
-          position = value;
         });
       }
     }

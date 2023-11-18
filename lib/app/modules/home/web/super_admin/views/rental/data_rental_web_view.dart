@@ -120,7 +120,7 @@ class DataRentalWebView extends GetView<DataRentalWebController> {
                 headerColumn: headerColumn,
                 rowHeight: 60,
               );
-            }
+            } 
 
             return const Center(
               child: Text('Data rental masih kosong!'),

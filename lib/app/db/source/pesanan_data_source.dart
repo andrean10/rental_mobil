@@ -4,6 +4,7 @@ import 'package:app_rental_mobil/app/helper/format_date_time.dart';
 import 'package:app_rental_mobil/app/shared/shared_method.dart';
 import 'package:app_rental_mobil/app/widgets/buttons/custom_filled_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -61,12 +62,14 @@ class PesananDataSource extends DataGridSource {
                 ),
               ),
               DataGridCell<num>(columnName: 'price', value: dataGridRow.harga),
+              DataGridCell<User>(
+                columnName: 'keluhan',
+                value: dataGridRow.userOrder?.order,
+              ),
               DataGridCell<GeoPoint?>(
                 columnName: 'location',
                 value: dataGridRow.userOrder?.order?.location,
               ),
-              // DataGridCell<PesananModel>(
-              //     columnName: 'actions', value: dataGridRow),
             ],
           ),
         )
@@ -78,11 +81,79 @@ class PesananDataSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => dataGridRows;
 
+  Future<void> launchMaps(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrlString(url);
+    } else {
+      showSnackBar(
+        content: const Text('Tidak dapat membuka google maps'),
+      );
+    }
+  }
+
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map((dataGridCell) {
       // final index = dataGridRows.indexOf(row);
+
+      Widget builderChild() {
+        const googleUrl = "https://www.google.com/maps/search/?api=1&query=";
+
+        return switch (dataGridCell.columnName) {
+          'keluhan' => Text.rich(
+              TextSpan(
+                text: dataGridCell.value?.keluhan as String? ?? '-',
+                children: [
+                  const TextSpan(text: ' '),
+                  if (dataGridCell.value.locationKeluhan != null)
+                    TextSpan(
+                      text: 'Lihat lokasi',
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          final geoPoint =
+                              dataGridCell.value.locationKeluhan as GeoPoint?;
+                          String query = Uri.encodeComponent(
+                              "${geoPoint!.latitude},${geoPoint.longitude}");
+                          launchMaps('$googleUrl$query');
+                        },
+                    ),
+                ],
+              ),
+              overflow: TextOverflow.clip,
+              softWrap: true,
+            ),
+          'location' => CustomFilledButton(
+              onPressed: (isHasLocation(dataGridCell.value as GeoPoint?))
+                  ? () async {
+                      final geoPoint = dataGridCell.value as GeoPoint?;
+                      String query = Uri.encodeComponent(
+                          "${geoPoint!.latitude},${geoPoint.longitude}");
+                      launchMaps('$googleUrl$query');
+                    }
+                  : null,
+              isFilledTonal: false,
+              child: Text(
+                'Lihat Lokasi',
+                style: Get.theme.textTheme.labelSmall
+                    ?.copyWith(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          'price' => Text(
+              CurrencyFormat.convertToIdr(number: dataGridCell.value ?? 0),
+              overflow: TextOverflow.ellipsis,
+            ),
+          _ => Text(
+              dataGridCell.value.toString(),
+              overflow: TextOverflow.ellipsis,
+            ),
+        };
+      }
 
       return Container(
         alignment: (dataGridCell.columnName == 'id' ||
@@ -93,46 +164,7 @@ class PesananDataSource extends DataGridSource {
             ? Alignment.center
             : Alignment.centerLeft,
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-        child: (dataGridCell.columnName == 'location')
-            ? CustomFilledButton(
-                onPressed: (isHasLocation(dataGridCell.value as GeoPoint?))
-                    ? () async {
-                        final geoPoint = dataGridCell.value as GeoPoint?;
-                        String query = Uri.encodeComponent(
-                            "${geoPoint!.latitude},${geoPoint.longitude}");
-                        String googleUrl =
-                            "https://www.google.com/maps/search/?api=1&query=$query";
-
-                        if (await canLaunchUrl(Uri.parse(googleUrl))) {
-                          await launchUrlString(googleUrl);
-                        } else {
-                          showSnackBar(
-                            content:
-                                const Text('Tidak dapat membuka google maps'),
-                          );
-                        }
-                      }
-                    : null,
-                isFilledTonal: false,
-                child: Text(
-                  'Lihat Lokasi',
-                  style: Get.theme.textTheme.labelSmall
-                      ?.copyWith(color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-              )
-            // (dataGridCell.columnName == 'actions')
-            //     ? BuilderActionsTablePesanaan(
-            //         value: dataGridCell.value as PesananModel,
-            //         rowIndex: index,
-            //       )
-            : Text(
-                (dataGridCell.columnName == 'price')
-                    ? CurrencyFormat.convertToIdr(
-                        number: dataGridCell.value ?? 0)
-                    : dataGridCell.value.toString(),
-                overflow: TextOverflow.ellipsis,
-              ),
+        child: builderChild(),
       );
     }).toList());
   }

@@ -68,10 +68,7 @@ class LoginController extends GetxController {
             ),
           );
 
-      logger.d('debug: data $data');
-
       if (data.isNotEmpty) {
-        logger.d('debug: data ${data.toString()}');
 
         await _initC.auth.signInWithEmailAndPassword(
           email: email.value.trim(),
@@ -86,13 +83,17 @@ class LoginController extends GetxController {
             moveToMain(role);
           }
         } else {
-          showSnackBar(
-            content: const Text(
-              'Akunmu belum diaktifkan, beritahu admin untuk mengaktifkan akunmu terlebih dahulu!',
-            ),
-            backgroundColor: theme.colorScheme.error,
-            duration: 3.seconds,
-          );
+          if (role != null && role == SharedValues.SUPER_ADMIN) {
+            moveToMain(role);
+          } else {
+            showSnackBar(
+              content: const Text(
+                'Akunmu belum diaktifkan, beritahu admin untuk mengaktifkan akunmu terlebih dahulu!',
+              ),
+              backgroundColor: theme.colorScheme.error,
+              duration: 3.seconds,
+            );
+          }
         }
       } else {
         showSnackBar(

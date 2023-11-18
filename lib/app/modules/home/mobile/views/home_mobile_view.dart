@@ -85,9 +85,10 @@ class HomeMobileView extends GetView<HomeMobileController> {
 
                   if (controller.checkIsRented(item.uid!)) {
                     return Container(
-                      height: double.infinity,
                       width: double.infinity,
+                      height: double.infinity,
                       color: Colors.black.withOpacity(0.5),
+                      padding: const EdgeInsets.all(4),
                       child: Center(
                         child: Text(
                           'Disewa',
@@ -95,6 +96,7 @@ class HomeMobileView extends GetView<HomeMobileController> {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     );

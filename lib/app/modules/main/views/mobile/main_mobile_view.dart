@@ -25,7 +25,7 @@ class MainMobileView extends GetView<MainController> {
         ),
         const NavigationDestination(
           icon: Icon(Icons.history_rounded),
-          label: 'Riwayat Transaksi',
+          label: 'Riwayat Pinjaman',
         ),
         // logout
         const NavigationDestination(
