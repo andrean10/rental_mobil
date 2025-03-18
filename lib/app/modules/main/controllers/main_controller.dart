@@ -31,11 +31,8 @@ class MainController extends GetxController {
     }
 
     if (GetPlatform.isAndroid) {
-      print('posisi di cek secara realtime');
-
       try {
         final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
-        print('isLocationEnabled = $isLocationEnabled');
 
         if (isLocationEnabled) {
           await _initC.determinePosition();
@@ -62,6 +59,10 @@ class MainController extends GetxController {
             .where(
               FieldPath.fromString('users.order.uid'),
               isEqualTo: uidUser,
+            )
+            .where(
+              FieldPath.fromString('tanggal_selesai'),
+              isGreaterThan: Timestamp.now(),
             )
             .get();
 
