@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -87,7 +89,7 @@ class InitController extends GetxController {
 
   Future<Position> determinePosition() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -103,6 +105,7 @@ class InitController extends GetxController {
     }
 
     bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
     if (!isServiceEnabled) {
       showDialogError(typeRequestLocator: 1, isFirstRequest: false);
       return Future.error('Layanan lokasi tidak aktif');
@@ -111,6 +114,42 @@ class InitController extends GetxController {
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
+  }
+
+  StreamSubscription<Position> getPositionStream() {
+    LocationSettings locationSettings;
+
+    if (GetPlatform.isAndroid) {
+      locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+        intervalDuration: const Duration(seconds: 10),
+        //(Optional) Set foreground notification config to keep the app alive
+        //when going to the background
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          notificationTitle: "Lokasi Anda Sedang Aktif",
+          notificationText:
+              "Aplikasi sedang menggunakan lokasi anda dibelakang layar",
+          enableWakeLock: true,
+        ),
+      );
+    } else {
+      locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+      );
+    }
+
+    final positionStream = Geolocator.getPositionStream(
+      locationSettings: locationSettings,
+    ).listen((Position? position) {
+      // print(
+      // position == null
+      //     ? 'Unknown'
+      //     : '${position.latitude.toString()}, ${position.longitude.toString()}',
+      // );
+    });
+    return positionStream;
   }
 
   bool isUserLogged() {

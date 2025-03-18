@@ -3,6 +3,10 @@
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
         <!-- Read storage permission for Android 12 and lower -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <!--
@@ -11,6 +15,11 @@
       for more information.
     -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- <uses-feature android:name="android.hardware.location.gps"/>
+    <uses-feature android:name="android.hardware.location.network"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> -->
 
     <application
         android:label="app_rental_mobil"
@@ -43,4 +52,10 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.location.PROVIDERS_CHANGED"/>
+        </intent>
+    </queries>
 </manifest>

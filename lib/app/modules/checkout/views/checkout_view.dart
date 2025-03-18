@@ -1,5 +1,6 @@
 import 'package:app_rental_mobil/app/helper/currency_format.dart';
 import 'package:app_rental_mobil/app/helper/format_date_time.dart';
+import 'package:app_rental_mobil/app/shared/shared_values.dart';
 import 'package:app_rental_mobil/app/widgets/buttons/custom_filled_button.dart';
 import 'package:flutter/material.dart';
 
@@ -82,30 +83,14 @@ class CheckoutView extends GetView<CheckoutController> {
             children: [
               Text('Syarat dan Ketentuan', style: theme.textTheme.titleLarge),
               const SizedBox(height: 16),
-              Text(
-                '1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '3. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '4. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '5. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                style: theme.textTheme.bodyMedium,
-              ),
+              ...SharedValues.SYARAT_DAN_KETENTUAN.map((e) {
+                final index = SharedValues.SYARAT_DAN_KETENTUAN.indexOf(e) + 1;
+                return Text(
+                  '$index.  $e',
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.justify,
+                );
+              }).toList(),
             ],
           ),
         ),

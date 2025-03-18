@@ -1,7 +1,6 @@
 import 'package:app_rental_mobil/app/db/models/pesanan_model.dart';
 import 'package:app_rental_mobil/app/helper/currency_format.dart';
 import 'package:app_rental_mobil/app/helper/format_date_time.dart';
-import 'package:app_rental_mobil/app/shared/shared_method.dart';
 import 'package:app_rental_mobil/app/widgets/buttons/custom_filled_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../routes/app_pages.dart';
 
 class PenyewaanDataSource extends DataGridSource {
   final List<PesananModel> pesanaan;
@@ -61,9 +62,9 @@ class PenyewaanDataSource extends DataGridSource {
                 ),
               ),
               DataGridCell<num>(columnName: 'price', value: dataGridRow.harga),
-              DataGridCell<GeoPoint?>(
+              DataGridCell<String>(
                 columnName: 'location',
-                value: dataGridRow.userOrder?.order?.location,
+                value: dataGridRow.uid,
               ),
             ],
           ),
@@ -91,24 +92,35 @@ class PenyewaanDataSource extends DataGridSource {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: (dataGridCell.columnName == 'location')
             ? CustomFilledButton(
-                onPressed: (isHasLocation(dataGridCell.value as GeoPoint?))
-                    ? () async {
-                        final geoPoint = dataGridCell.value as GeoPoint?;
-                        String query = Uri.encodeComponent(
-                            "${geoPoint!.latitude},${geoPoint.longitude}");
-                        String googleUrl =
-                            "https://www.google.com/maps/search/?api=1&query=$query";
+                onPressed: () {
+                  Get.toNamed(
+                    Routes.LOKASI_USER,
+                    arguments: dataGridCell.value,
+                  );
+                },
+                // onPressed: (isHasLocation(dataGridCell.value as GeoPoint?))
+                //     ? () async {
+                //         Get.toNamed(
+                //           Routes.LOKASI_USER,
+                //           arguments: dataGridCell.value,
+                //         );
 
-                        if (await canLaunchUrl(Uri.parse(googleUrl))) {
-                          await launchUrlString(googleUrl);
-                        } else {
-                          showSnackBar(
-                            content:
-                                const Text('Tidak dapat membuka google maps'),
-                          );
-                        }
-                      }
-                    : null,
+                //         // final geoPoint = dataGridCell.value as GeoPoint?;
+                //         // String query = Uri.encodeComponent(
+                //         //     "${geoPoint!.latitude},${geoPoint.longitude}");
+                //         // String googleUrl =
+                //         //     "https://www.google.com/maps/search/?api=1&query=$query";
+
+                //         // if (await canLaunchUrl(Uri.parse(googleUrl))) {
+                //         //   await launchUrlString(googleUrl);
+                //         // } else {
+                //         //   showSnackBar(
+                //         //     content:
+                //         //         const Text('Tidak dapat membuka google maps'),
+                //         //   );
+                //         // }
+                //       }
+                //     : null,
                 isFilledTonal: false,
                 child: Text(
                   'Lihat Lokasi',

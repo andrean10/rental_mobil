@@ -14,8 +14,8 @@ class HomeMobileView extends GetView<HomeMobileController> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
+    final size = context.mediaQuerySize;
+    final theme = context.theme;
 
     PreferredSizeWidget builderAppBar() {
       return AppBar(
@@ -126,7 +126,7 @@ class HomeMobileView extends GetView<HomeMobileController> {
             Text(
               '${item.deskripsi}',
               style: theme.textTheme.bodySmall,
-              maxLines: 5,
+              maxLines: 4,
               overflow: TextOverflow.ellipsis,
             ),
             const Spacer(),

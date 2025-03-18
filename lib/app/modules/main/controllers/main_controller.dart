@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:app_rental_mobil/app/db/models/users_model.dart';
 import 'package:app_rental_mobil/app/modules/init/controllers/init_controller.dart';
 import 'package:app_rental_mobil/app/shared/shared_method.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -11,6 +15,7 @@ import '../../../routes/app_pages.dart';
 class MainController extends GetxController {
   late final InitController _initC;
   final currentIndex = 0.obs;
+  StreamSubscription<Position>? _userPositon;
 
   final logger = Logger();
 
@@ -20,14 +25,67 @@ class MainController extends GetxController {
     _initController();
   }
 
-  void _initController() {
+  Future<void> _initController() async {
     if (Get.isRegistered<InitController>()) {
       _initC = Get.find<InitController>();
     }
+
+    if (GetPlatform.isAndroid) {
+      print('posisi di cek secara realtime');
+
+      try {
+        final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+        print('isLocationEnabled = $isLocationEnabled');
+
+        if (isLocationEnabled) {
+          await _initC.determinePosition();
+          _updateRealtimeLocation();
+        }
+      } catch (e) {
+        _initC.logger.e('Error: $e');
+      }
+    }
   }
 
+  void _updateRealtimeLocation() {
+    _userPositon = _initC.getPositionStream();
 
+    if (_userPositon != null) {
+      final uidUser = _initC.auth.currentUser?.uid;
 
+      _userPositon!.onData((data) async {
+        print('posisi user = ${data.latitude}, ${data.longitude}');
+
+        // cek dulu apakah user punya kendaraan yang sedang disewa/berlangsung
+        final dataPesanan = await _initC.firestore
+            .collection('pesanan')
+            .where(
+              FieldPath.fromString('users.order.uid'),
+              isEqualTo: uidUser,
+            )
+            .get();
+
+        if (dataPesanan.size > 0) {
+          final batch = _initC.firestore.batch(); // Use batch for bulk updates
+          final listPesanan = dataPesanan.docs;
+
+          for (var pesanan in listPesanan) {
+            final pesananRef = pesanan.reference;
+            batch.update(pesananRef, {
+              'users.order.location': GeoPoint(data.latitude, data.longitude),
+            });
+          }
+
+          try {
+            await batch.commit(); // Commit all updates at once
+            print('Lokasi pesanan berhasil diperbarui.');
+          } catch (e) {
+            logger.e('Gagal memperbarui lokasi pesanan: $e');
+          }
+        }
+      });
+    }
+  }
 
   void changeIndexMobile(int index) {
     if (index != 2) {

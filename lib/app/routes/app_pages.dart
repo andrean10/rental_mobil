@@ -8,6 +8,8 @@ import '../modules/checkout/bindings/checkout_binding.dart';
 import '../modules/checkout/views/checkout_view.dart';
 import '../modules/home_detail/bindings/home_detail_binding.dart';
 import '../modules/home_detail/views/home_detail_view.dart';
+import '../modules/lokasi_user/bindings/lokasi_user_binding.dart';
+import '../modules/lokasi_user/views/lokasi_user_view.dart';
 import '../modules/main/bindings/main_binding.dart';
 import '../modules/main/views/main_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
@@ -48,6 +50,11 @@ class AppPages {
       name: _Paths.CHECKOUT,
       page: () => const CheckoutView(),
       binding: CheckoutBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOKASI_USER,
+      page: () => const LokasiUserView(),
+      binding: LokasiUserBinding(),
     ),
   ];
 }

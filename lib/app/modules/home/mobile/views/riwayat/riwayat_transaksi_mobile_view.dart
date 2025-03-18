@@ -68,50 +68,55 @@ class RiwayatTransaksiMobileView
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AutoSizeText(
-              '${item.kendaraanModel?.carName}',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            AutoSizeText(
-              '${item.userOrder?.rental?.fullName}',
-              style: theme.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 12),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.today_rounded,
-                  size: 18,
-                  color: Colors.blue,
-                ),
-                const SizedBox(width: 4),
                 AutoSizeText(
-                  FormatDateTime.dateToString(
-                    newPattern: 'dd MMMM yyyy, HH:mm',
-                    value: item.tanggalMulai.toString(),
+                  '${item.kendaraanModel?.carName}',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  style: theme.textTheme.labelMedium,
                 ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                const Icon(
-                  Icons.event_available_rounded,
-                  size: 18,
-                  color: Colors.green,
-                ),
-                const SizedBox(width: 4),
+                // const SizedBox(height: 4),
                 AutoSizeText(
-                  FormatDateTime.dateToString(
-                    newPattern: 'dd MMMM yyyy, HH:mm',
-                    value: item.tanggalSelesai.toString(),
-                  ),
-                  style: theme.textTheme.labelMedium,
+                  '${item.userOrder?.rental?.fullName}',
+                  style: theme.textTheme.bodyMedium,
+                ),
+                // const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.today_rounded,
+                      size: 18,
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(width: 4),
+                    AutoSizeText(
+                      FormatDateTime.dateToString(
+                        newPattern: 'dd MMMM yyyy, HH:mm',
+                        value: item.tanggalMulai.toString(),
+                      ),
+                      style: theme.textTheme.labelMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.event_available_rounded,
+                      size: 18,
+                      color: Colors.green,
+                    ),
+                    const SizedBox(width: 4),
+                    AutoSizeText(
+                      FormatDateTime.dateToString(
+                        newPattern: 'dd MMMM yyyy, HH:mm',
+                        value: item.tanggalSelesai.toString(),
+                      ),
+                      style: theme.textTheme.labelMedium,
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -9,6 +9,7 @@ abstract class Routes {
   static const MAIN = _Paths.MAIN;
   static const HOME_DETAIL = _Paths.HOME_DETAIL;
   static const CHECKOUT = _Paths.CHECKOUT;
+  static const LOKASI_USER = _Paths.LOKASI_USER;
 }
 
 abstract class _Paths {
@@ -19,4 +20,5 @@ abstract class _Paths {
   static const MAIN = '/main';
   static const HOME_DETAIL = '/home-detail';
   static const CHECKOUT = '/checkout';
+  static const LOKASI_USER = '/lokasi-user';
 }

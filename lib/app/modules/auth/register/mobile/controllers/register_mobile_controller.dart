@@ -20,8 +20,8 @@ class RegisterMobileController extends GetxController {
   final numberPhoneC = TextEditingController();
   final addressC = TextEditingController();
 
-  final email = ''.obs;
   final fullName = ''.obs;
+  final email = ''.obs;
   final numberPhone = ''.obs;
   final address = ''.obs;
 
@@ -41,8 +41,8 @@ class RegisterMobileController extends GetxController {
       _initC = Get.find<InitController>();
     }
 
-    emailC.addListener(setEmail);
     fullNameC.addListener(setFullName);
+    emailC.addListener(setEmail);
     numberPhoneC.addListener(setNumberPhone);
     addressC.addListener(setAddress);
   }
